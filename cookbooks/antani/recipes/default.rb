@@ -42,6 +42,7 @@ all_users.each do | u |
     puts "Creating user #{ u[ 'logon' ] }"
     shell u[ 'shell' ]
     home home_dir
+    supports :manage_home => true
   end
 
   directory "#{ home_dir }/.ssh" do
