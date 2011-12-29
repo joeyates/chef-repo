@@ -35,9 +35,6 @@ data_bag  = Chef::EncryptedDataBagItem.load( 'users', 'all', secret )
 all_users = data_bag[ 'users' ]
 
 all_users.each do | u |
-
-  pp u
-
   home_dir = "/home/#{ u[ 'logon' ] }"
 
   user u[ 'logon' ] do
@@ -60,4 +57,9 @@ all_users.each do | u |
     variables :ssh_keys => u[ 'public-keys' ]
   end
 
+end
+
+sudo_users = all_users.map { | u | u[ 'logon' ] }
+group 'sudo' do
+  members sudo_users
 end
