@@ -92,3 +92,23 @@ namespace :databag do
   end
 
 end
+
+namespace :antani do
+
+  desc 'Encrypt secrets'
+  task :encrypt, [ :secret_key_file ] do | t, args |
+    call_args = Rake::TaskArguments.new( [ :plain_json_file, :secret_key_file, :data_bag, :name ],
+                                         [ 'all.json', args.secret_key_file, 'users', 'all' ] )
+    Rake::Task[ 'databag:encrypted:save' ].execute( call_args )
+  end
+
+  desc 'Prepare the tarball'
+  task :tarball, [ :cookbooks ] do | t, args |
+    cookbooks = args.cookbooks || []
+    cookbooks += [ 'antani', 'users' ]
+    cookbooks.uniq!
+    cookbooks_match = cookbooks.join( '\|' )
+    `find ./cookbooks ./data_bags \\( -regex '.*/\\(#{ cookbooks_match }\\)*/.*' -or -regex '^./data_bags/.*' \\) -print0 | tar zcv --null -f chef-solo.tar.gz -T -`
+  end
+
+end
