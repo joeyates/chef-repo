@@ -39,12 +39,13 @@ all_users.each do | u |
   home_dir = "/home/#{ u[ 'logon' ] }"
 
   user u[ 'logon' ] do
+    puts "Creating user #{ u[ 'logon' ] }"
     shell u[ 'shell' ]
     home home_dir
   end
 
   directory "#{ home_dir }/.ssh" do
-    owner u['logon']
+    owner u[ 'logon' ]
     group u[ 'logon' ]
     mode '0700'
   end
