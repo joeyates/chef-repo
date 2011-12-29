@@ -25,5 +25,5 @@ secret = Chef::EncryptedDataBagItem.load_secret(key_file)
 puts "#{__FILE__}:#{__LINE__}: %% secret: #{secret}"
 data_bag = Chef::EncryptedDataBagItem.load("users", "all", secret)
 pp passwords
-all_users = data_bag['all']
+all_users = data_bag[ 'users' ]
 pp all_users
