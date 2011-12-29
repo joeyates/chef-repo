@@ -63,3 +63,32 @@ task :bundle_cookbook, :cookbook do |t, args|
 
   FileUtils.rm_rf temp_dir
 end
+
+namespace :databag do
+
+  namespace :encrypted do
+
+    desc 'Save'
+    task :save, [ :plain_json_file, :secret_key_file, :data_bag, :name ] do | t, args |
+      plain_hash     = JSON.load( File.open( args.plain_json_file ) )
+      secret         = Chef::EncryptedDataBagItem.load_secret( args.secret_key_file )
+      encrypted      = Chef::EncryptedDataBagItem.encrypt_data_bag_item( plain_hash, secret)
+      encrypted_path = File.join( 'data_bags', args.data_bag )
+      FileUtils.mkdir_p( encrypted_path )
+      encrypted_file = File.join( encrypted_path, args.name + '.json' )
+      File.open( encrypted_file, 'wb' ) do | f |
+        f.write encrypted.to_json
+      end
+    end
+
+    desc 'Extract an encrypted data bag'
+    task :extract, [ :data_bag, :name, :secret_key_file ] do | t, args |
+      encrypted_file = File.join( 'data_bags', args.data_bag, args.name + '.json' )
+      encryped_data  = JSON.load( File.open( encrypted_file ) )
+      secret         = Chef::EncryptedDataBagItem.load_secret( args.secret_key_file )
+      puts Chef::EncryptedDataBagItem.new( encryped_data, secret ).to_hash
+    end
+
+  end
+
+end
