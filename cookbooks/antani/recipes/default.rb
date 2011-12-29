@@ -36,10 +36,11 @@ all_users = data_bag[ 'users' ]
 
 all_users.each do | u |
 
+  pp u
+
   home_dir = "/home/#{ u[ 'logon' ] }"
 
   user u[ 'logon' ] do
-    puts "Creating user #{ u[ 'logon' ] }"
     shell u[ 'shell' ]
     home home_dir
     supports :manage_home => true
