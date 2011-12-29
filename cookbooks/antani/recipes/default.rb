@@ -20,10 +20,10 @@
 require 'pp'
 
 key_file = '/root/antani_data_bag_key'
-puts "#{__FILE__}:#{__LINE__}: %% key_file: #{key_file}"
-secret = Chef::EncryptedDataBagItem.load_secret(key_file)
-puts "#{__FILE__}:#{__LINE__}: %% secret: #{secret}"
+secret   = Chef::EncryptedDataBagItem.load_secret(key_file)
 data_bag = Chef::EncryptedDataBagItem.load("users", "all", secret)
-pp passwords
+puts 'data_bag'
+pp data_bag
 all_users = data_bag[ 'users' ]
+puts 'all_users'
 pp all_users
