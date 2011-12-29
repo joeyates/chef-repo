@@ -23,7 +23,7 @@ key_file = '/root/antani_data_bag_key'
 puts "#{__FILE__}:#{__LINE__}: %% key_file: #{key_file}"
 secret = Chef::EncryptedDataBagItem.load_secret(key_file)
 puts "#{__FILE__}:#{__LINE__}: %% secret: #{secret}"
-passwords = Chef::EncryptedDataBagItem.load("users", "all", secret)
+data_bag = Chef::EncryptedDataBagItem.load("users", "all", secret)
 pp passwords
-all_users = users['all']
+all_users = data_bag['all']
 pp all_users
