@@ -35,11 +35,13 @@ data_bag  = Chef::EncryptedDataBagItem.load( 'users', 'all', secret )
 all_users = data_bag[ 'users' ]
 
 all_users.each do | u |
-  user u[ 'logon' ] do
-    shell u[ 'shell' ]
-  end
 
   home_dir = "/home/#{ u[ 'logon' ] }"
+
+  user u[ 'logon' ] do
+    shell u[ 'shell' ]
+    home home_dir
+  end
 
   directory "#{ home_dir }/.ssh" do
     owner u['logon']
