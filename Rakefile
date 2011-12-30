@@ -105,7 +105,7 @@ namespace :antani do
   desc 'Prepare the tarball'
   task :tarball, [ :cookbooks ] do | t, args |
     cookbooks = args.cookbooks || []
-    cookbooks += [ 'antani', 'users', 'apt', 'nginx' ]
+    cookbooks += [ 'antani', 'users', 'apt' ]
     cookbooks.uniq!
     cookbooks_match = cookbooks.join( '\|' )
     `find ./cookbooks ./data_bags \\( -regex '.*/\\(#{ cookbooks_match }\\)*/.*' -or -regex '^./data_bags/.*' \\) -print0 | tar zcv --null -f chef-solo.tar.gz -T -`
