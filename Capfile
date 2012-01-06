@@ -1,17 +1,21 @@
 =begin
 
-Setup public key auth:
+1. Prepare local environment
 
- $ ssh root@HOST "mkdir -p /root/.ssh && chmod 0700 /root/.ssh"
- $ scp PRIVATE_KEY root@HOST:/root/.ssh/authorized_keys
+ $ export ANTANI=...
 
-Install:
+1. Setup public key authentication
 
- $ cap chef:bootstrap TARGET=HOST SECRET_KEY=/PATH/TO/antani_data_bag_key
+ $ ssh root@$ANTANI "mkdir -p /root/.ssh && chmod 0700 /root/.ssh"
+ $ scp PUBLIC_KEY root@$ANTANI:/root/.ssh/authorized_keys
 
-Run chef-solo:
+2. Install ruby and chef-solo
 
- $ cap chef:run_recipes TARGET=HOST
+ $ cap chef:bootstrap TARGET=$ANTANI SECRET_KEY=/PATH/TO/antani_data_bag_key
+
+3. Run chef-solo
+
+ $ cap chef:run_recipes TARGET=$ANTANI
 
 =end
 
