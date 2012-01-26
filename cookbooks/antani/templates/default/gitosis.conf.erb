@@ -1,0 +1,7 @@
+# -*- conf -*-
+
+[gitosis]
+
+[group gitosis-admin]
+writable = gitosis-admin
+members = git <%= @users.join ' ' %>
