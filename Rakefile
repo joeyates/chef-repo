@@ -84,9 +84,9 @@ namespace :databag do
     desc 'Extract an encrypted data bag'
     task :extract, [ :data_bag, :name, :secret_key_file ] do | t, args |
       encrypted_file = File.join( 'data_bags', args.data_bag, args.name + '.json' )
-      encryped_data  = JSON.load( File.open( encrypted_file ) )
-      secret         = Chef::EncryptedDataBagItem.load_secret( args.secret_key_file )
-      puts Chef::EncryptedDataBagItem.new( encryped_data, secret ).to_hash
+      encrypted_data = JSON.load( File.open( encrypted_file ) )
+      secret         = Chef::EncryptedDataBagItem.load_secret( File.expand_path args.secret_key_file )
+      puts Chef::EncryptedDataBagItem.new( encrypted_data, secret ).to_hash.to_yaml
     end
 
   end
