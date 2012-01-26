@@ -51,7 +51,7 @@ RSA_KEY = "#{ node[ :gitosis ][ :home ] }/.ssh/id_git"
 
 if not File.directory?( RSA_KEY )
 
-  execute "ssh-keygen -t rsa -f #{ RSA_KEY } -N '' -C gitosis" do
+  execute "ssh-keygen -t rsa -b 4096 -f #{ RSA_KEY } -N '' -C gitosis" do
     creates RSA_KEY
     cwd node[ :gitosis ][ :home ]
     user node[ :gitosis ][ :user ]
@@ -65,6 +65,10 @@ if not File.directory?( RSA_KEY )
     group node[ :gitosis ][ :user ]
     umask "027"
     environment "HOME" => node[ :gitosis ][ :home ]
+  end
+
+  bash "Ensure post-update hook is executable" do
+    code "chmod 755 #{ node[ :gitosis ][ :home ] }/repositories/gitosis-admin.git/hooks/post-update"
   end
 
 end
