@@ -195,7 +195,7 @@ end
 ########################
 # ruby on rails
 
-%w( libcurl4-openssl-dev ).each do | p |
+%w( libcurl4-openssl-dev libxml2-dev ).each do | p |
   package p do
     action :install
   end
@@ -233,25 +233,6 @@ end
 
 # restart apache
 
-bash 'compile passenger for Nginx' do
-  not_if { File.exists?( '/usr/lib/ruby/gems/1.9.1/gems/passenger-3.0.11/ext/common/libpassenger_common.a' ) }
-  user 'root'
-  code <<-EOH
-  passenger-install-nginx-module --auto-download --prefix=/opt/nginx --auto
-  EOH
-end
-
-#  http {
-#      ...
-#      passenger_root /usr/lib/ruby/gems/1.9.1/gems/passenger-3.0.11;
-#      passenger_ruby /usr/bin/ruby;
-#      ...
-#  }
-
-template '/etc/init.d/nginx' do
-  source 'nginx.init.erb'
-  mode '0755'
-end
-
 ####
 include_recipe "antani::gitosis"
+include_recipe "antani::nginx"
