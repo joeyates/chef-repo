@@ -1,9 +1,5 @@
-maintainer       "Example Com"
-maintainer_email "ops@example.com"
+maintainer       "Antani Ltd"
+maintainer_email "devteam@antani.co.uk"
 license          "Apache 2.0"
-description      "Installs/Configures foobar"
-
-version          "0.1"
-
-depends "apt"
-depends "nginx"
+description      "Installs/Configures Antani server"
+version          "0.1.0"
