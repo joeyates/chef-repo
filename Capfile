@@ -1,13 +1,9 @@
 =begin
 
-1. Prepare local environment
-
- $ export ANTANI=...
-
 1. Setup public key authentication
 
- $ ssh root@$ANTANI "mkdir -p /root/.ssh && chmod 0700 /root/.ssh"
- $ scp PUBLIC_KEY root@$ANTANI:/root/.ssh/authorized_keys
+ $ ssh root@antani.co.uk "mkdir -p /root/.ssh && chmod 0700 /root/.ssh"
+ $ ssh-copy-id -i PUBLIC_KEY root@antani.co.uk
 
 2. Install ruby and chef-solo
 
@@ -19,55 +15,44 @@
 
 =end
 
-role :target,   ENV[ 'TARGET' ] || ''
+role :target,   ENV[ 'TARGET' ] || 'antani.co.uk'
 set  :user,     'root'
 
 namespace :chef do
 
   desc 'Install minimal setup on remote machine'
   task :bootstrap, :roles => :target do
-    raise "TARGET not set" unless ENV[ 'TARGET' ]
     raise "SECRET_KEY not set" unless ENV[ 'SECRET_KEY' ]
     raise "SECRET_KEY file does not exist" unless File.exist?( ENV[ 'SECRET_KEY' ] )
     install_dependencies
-    ruby19
-    rubygems18
+    ruby193
     gems
     install_chef_solo
   end
 
   desc 'Run chef-solo'
   task :run_recipes, :roles => :target do
-    raise "TARGET not set" unless ENV[ 'TARGET' ]
     run 'chef-solo -r https://github.com/joeyates/chef-repo/raw/master/chef-solo.tar.gz'
   end
 
   task :install_dependencies do
     run "apt-get update"
-    run "apt-get install -y libreadline5-dev libssl-dev libsqlite3-dev curl"
+    run "apt-get install -y libreadline5-dev libssl-dev libsqlite3-dev zlib1g-dev libyaml-dev curl"
   end
 
-  task :ruby19 do
+  task :ruby193 do
     directory '/root/build'
-    run 'cd /root/build && curl -O -# http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz'
-    run 'cd /root/build && tar xf ruby-1.9.2-p290.tar.gz'
-    run 'cd /root/build/ruby-1.9.2-p290 && ./configure --prefix=/usr'
-    run 'cd /root/build/ruby-1.9.2-p290 && make'
-    run 'cd /root/build/ruby-1.9.2-p290 && make install'
-    run 'rm -rf /root/build'
-  end
-
-  task :rubygems18 do
-    directory '/root/build'
-    run 'cd /root/build && curl -O -# http://production.cf.rubygems.org/rubygems/rubygems-1.8.10.tgz'
-    run 'cd /root/build && tar xf rubygems-1.8.10.tgz'
-    run 'cd /root/build/rubygems-1.8.10 && ruby setup.rb --no-format-executable'
+    run 'cd /root/build && curl -O -# http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p0.tar.gz'
+    run 'cd /root/build && tar xf ruby-1.9.3-p0.tar.gz'
+    run 'cd /root/build/ruby-1.9.3-p0 && ./configure --prefix=/usr'
+    run 'cd /root/build/ruby-1.9.3-p0 && make'
+    run 'cd /root/build/ruby-1.9.3-p0 && make install'
     run 'rm -rf /root/build'
   end
 
   task :gems do
     put gemrc, '/root/.gemrc'
-    run 'gem install chef --no-ri --no-rdoc'
+    run 'gem install chef'
   end
 
   task :install_chef_solo do
