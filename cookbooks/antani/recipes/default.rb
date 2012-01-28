@@ -180,6 +180,10 @@ end
   end
 end
 
+template '/etc/apache2/ports.conf' do
+  source 'apache2/ports.conf'
+end
+
 directory '/etc/apache2/sites-available' do
   owner 'root'
   group 'sudo'
@@ -224,7 +228,7 @@ bash 'compile passenger for Apache' do
 end
 
 template '/etc/apache2/mods-available/passenger.load' do
-  source 'passenger.load'
+  source 'apache2/passenger.load'
 end
 
 link '/etc/apache2/mods-enabled/passenger.load' do
