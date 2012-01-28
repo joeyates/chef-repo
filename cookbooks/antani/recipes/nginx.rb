@@ -1,5 +1,5 @@
 bash 'compile passenger for Nginx' do
-  not_if { File.exists?( '/opt/nginx' ) }
+  not_if { File.directory?( '/opt/nginx' ) }
   user 'root'
   code <<-EOH
   passenger-install-nginx-module --auto-download --prefix=/opt/nginx --auto
@@ -14,7 +14,7 @@ end
 #  }
 
 template '/etc/init.d/nginx' do
-  source 'nginx.init.erb'
+  source 'nginx/nginx.init.erb'
   mode '0755'
 end
 

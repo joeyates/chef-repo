@@ -57,7 +57,6 @@ all_users.each do | u |
   end
 
   template "#{ home_dir }/.ssh/authorized_keys" do
-    source 'authorized_keys.erb'
     owner u[ 'logon' ]
     group u[ 'logon' ]
     mode '0600'
@@ -86,7 +85,6 @@ end
 # System settings
 
 template '/etc/hostname' do
-  source 'hostname.erb'
   mode '0644'
 end
 
@@ -118,125 +116,11 @@ end
   end
 end
 
+
 #######################
-# postgresql and postgis
-
-# Normal install runs initdb without setting the encoding
-
-if not File.directory?( '/var/lib/postgresql/9.1' )
-
-  package 'postgresql-9.1' do
-    action :install
-  end
-
-  # Repair encoding
-  execute 're-create template databases with UTF8 encoding' do
-    user 'root'
-    command <<-EOT
-    pg_dropcluster --stop 9.1 main
-    pg_createcluster --encoding=UTF8 --start 9.1 main
-    EOT
-  end
-
-  [ 'postgresql-9.1-postgis', 'postgresql-server-dev-9.1' ].each do | p |
-    package p do
-      action :install
-    end
-  end
-
-  execute 'create postgis_template' do
-    user 'postgres'
-    command <<-EOT
-    createdb -E UTF8 -T template0 template_postgis
-    psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
-    psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
-    psql -d template_postgis -c "UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template_postgis';"
-    EOT
-  end
-
-  template '/etc/postgresql/9.1/main/pg_hba.conf' do
-    source 'pg_hba.conf'
-    mode '0644'
-  end
-
-  execute 'apply changes to postgresql permissions' do
-    user 'root'
-    command '/etc/init.d/postgresql restart'
-    action :run
-  end
-
-end
-
-########################
-# apache
-
-# TODO:
-# ports.conf
-# NameVirtualHost 92.60.123.214:80
-
-%w( apache2-mpm-prefork apache2-prefork-dev ).each do | p |
-  package p do
-    action :install
-  end
-end
-
-template '/etc/apache2/ports.conf' do
-  source 'apache2/ports.conf.erb'
-end
-
-directory '/etc/apache2/sites-available' do
-  owner 'root'
-  group 'sudo'
-  mode '0775'
-end
-
-directory '/etc/apache2/sites-enabled' do
-  owner 'root'
-  group 'sudo'
-  mode '0775'
-end
-
-########################
-# ruby on rails
-
-%w( libcurl4-openssl-dev libxml2-dev ).each do | p |
-  package p do
-    action :install
-  end
-end
-
-gem_package 'passenger' do
-  action :install
-  version '3.0.11'
-end
-
-gem_package 'bundler' do
-  action :install
-  options :prerelease => true
-end
-
-gem_package 'backup' do
-  action :install
-end
-
-bash 'compile passenger for Apache' do
-  not_if { File.exists?( '/usr/lib/ruby/gems/1.9.1/gems/passenger-3.0.11/ext/apache2/mod_passenger.so' ) }
-  user 'root'
-  code <<-EOH
-  passenger-install-apache2-module --auto
-  EOH
-end
-
-template '/etc/apache2/mods-available/passenger.load' do
-  source 'apache2/passenger.load'
-end
-
-link '/etc/apache2/mods-enabled/passenger.load' do
-  to '/etc/apache2/mods-available/passenger.load'
-end
-
-# restart apache
-
-####
-include_recipe "antani::gitosis"
+# Other recipes
+include_recipe "antani::postgres"
+include_recipe "antani::apache2"
+include_recipe "antani::rubyonrails"
 include_recipe "antani::nginx"
+include_recipe "antani::gitosis"
