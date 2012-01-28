@@ -181,7 +181,7 @@ end
 end
 
 template '/etc/apache2/ports.conf' do
-  source 'apache2/ports.conf'
+  source 'apache2/ports.conf.erb'
 end
 
 directory '/etc/apache2/sites-available' do
