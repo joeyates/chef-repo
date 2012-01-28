@@ -10,6 +10,7 @@ if not File.directory?( '/opt/nginx' )
     EOH
   end
 
+  # see http://wiki.nginx.org/Nginx-init-ubuntu
   template '/etc/init.d/nginx' do
     source 'nginx/nginx.init.erb'
     mode '0755'
