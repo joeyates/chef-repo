@@ -56,7 +56,5 @@ smtp_settings:
  :address:              localhost
  :domain:               <%= @hostname %>
  :port:                 "25"
- :authentication:       :plain, :login, :cram_md5
- :enable_starttls_auto: true
- :user_name:            USERNAME
- :password:             PASSWORD
+ :authentication:       :plain
+ :enable_starttls_auto: false
