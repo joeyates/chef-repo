@@ -1,0 +1,9 @@
+server {
+    listen       92.60.123.215:80;
+    server_name  <%= @hostname %>;
+    root         <%= @errbit_path %>;
+    passenger_enabled on;
+
+    charset utf-8;
+    access_log  logs/errbit.access.log;
+}
