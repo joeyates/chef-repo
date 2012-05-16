@@ -33,10 +33,39 @@ git add chef-solo.tar.gz
 git commit
 ```
 
+Host Setup
+==========
+
+Setup public key authentication
+-------------------------------
+
+```shell
+$ ssh root@antani.co.uk "mkdir -p /root/.ssh && chmod 0700 /root/.ssh"
+$ ssh-copy-id -i PUBLIC_KEY root@antani.co.uk
+```
+
+Install ruby and chef-solo
+--------------------------
+
+This is done from you local machine, using Capistrano.
+
+```shell
+$ cap chef:bootstrap TARGET=$ANTANI SECRET_KEY=/PATH/TO/antani_data_bag_key
+```
+
 Deploy
 ======
 
-On host:
+Via capistrano
+--------------
+
+```shell
+$ cap chef:run_recipes TARGET=$ANTANI
+```
+
+On host
+-------
+
 ```shell
 sudo chef-solo -r https://github.com/joeyates/chef-repo/raw/master/chef-solo.tar.gz
 ```

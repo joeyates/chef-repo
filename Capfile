@@ -1,20 +1,3 @@
-=begin
-
-1. Setup public key authentication
-
- $ ssh root@antani.co.uk "mkdir -p /root/.ssh && chmod 0700 /root/.ssh"
- $ ssh-copy-id -i PUBLIC_KEY root@antani.co.uk
-
-2. Install ruby and chef-solo
-
- $ cap chef:bootstrap TARGET=$ANTANI SECRET_KEY=/PATH/TO/antani_data_bag_key
-
-3. Run chef-solo
-
- $ cap chef:run_recipes TARGET=$ANTANI
-
-=end
-
 role :target,   ENV[ 'TARGET' ] || 'antani.co.uk'
 set  :user,     'root'
 
