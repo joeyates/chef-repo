@@ -20,6 +20,7 @@
 
 require 'rubygems'
 require 'chef'
+require 'highline'
 require 'json'
 
 # Load constants from rake config file.
@@ -111,4 +112,10 @@ namespace :antani do
     `find ./cookbooks ./data_bags \\( -regex '.*/\\(#{ cookbooks_match }\\)*/.*' -or -regex '^./data_bags/.*' \\) -print0 | tar zcv --null -f chef-solo.tar.gz -T -`
   end
 
+  desc 'Run the installation'
+  task :install, [ :host ] do | t, args |
+    puts "args.host: #{ args.host }"
+  end
+
 end
+
