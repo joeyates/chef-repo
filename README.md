@@ -15,12 +15,12 @@ Databags
 Decrypt:
 
 ```shell
-rake databag:encrypted:extract[users,all,'/PATH/TO/antani_data_bag_key'] > all.json
+rake "databag:encrypted:extract[users,all,/PATH/TO/antani_data_bag_key]" > all.json
 ```
 
 Encrypt:
 ```shell
-rake antani:encrypt['/Users/joe/antani_data_bag_key']
+rake "antani:encrypt[/Users/joe/antani_data_bag_key]"
 git add data_bags/users/all.json
 ```
 
