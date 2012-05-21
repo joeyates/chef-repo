@@ -23,7 +23,6 @@ require 'chef'
 require 'highline'
 require 'json'
 require 'remote/session'
-require 'remote/session/send_file'
 require 'vagrant'
 
 # Load constants from rake config file.
