@@ -97,6 +97,8 @@ namespace :databag do
 
 end
 
+require 'archive/tar/minitar'
+
 namespace :antani do
 
   desc 'Encrypt secrets'
@@ -107,12 +109,18 @@ namespace :antani do
   end
 
   desc 'Prepare the tarball'
-  task :tarball, [ :cookbooks ] do | t, args |
-    cookbooks = args.cookbooks || []
-    cookbooks += [ 'antani' ]
-    cookbooks.uniq!
-    cookbooks_match = cookbooks.join( '\|' )
-    `find ./cookbooks ./data_bags \\( -regex '.*/\\(#{ cookbooks_match }\\)*/.*' -or -regex '^./data_bags/.*' \\) -print0 | tar zcv --null -f chef-solo.tar.gz -T -`
+  task :tarball do
+    tgz_filename = 'chef-solo.tar.gz'
+    FileUtils.rm( tgz_filename ) if File.exist?( tgz_filename )
+    tgz   = Zlib::GzipWriter.new( File.open( tgz_filename, 'wb' ) )
+    tar   = Archive::Tar::Minitar::Output.new( tgz )
+
+    files = Dir.glob('{data_bags,cookbooks}/**/*')
+    files.reject! { | f | File.directory?( f ) }
+    files.each do | f |
+      Archive::Tar::Minitar.pack_file( f, tar )
+    end
+    tgz.close
   end
 
   desc 'Update the machine, running chef-solo'

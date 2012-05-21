@@ -1,5 +1,5 @@
 .rvmrc
 .vagrant
-Gemfile
+Gemfile.lock
 all.json
 
