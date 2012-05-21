@@ -93,6 +93,9 @@ namespace :databag do
 
 end
 
+require 'archive'
+require 'fileutils'
+
 namespace :antani do
 
   desc 'Encrypt secrets'
@@ -103,12 +106,13 @@ namespace :antani do
   end
 
   desc 'Prepare the tarball'
-  task :tarball, [ :cookbooks ] do | t, args |
-    cookbooks = args.cookbooks || []
-    cookbooks += [ 'antani' ]
-    cookbooks.uniq!
-    cookbooks_match = cookbooks.join( '\|' )
-    `find ./cookbooks ./data_bags \\( -regex '.*/\\(#{ cookbooks_match }\\)*/.*' -or -regex '^./data_bags/.*' \\) -print0 | tar zcv --null -f chef-solo.tar.gz -T -`
+  task :tarball do
+    tgz_filename = 'chef-solo.tar.gz'
+    FileUtils.rm( tgz_filename ) if File.exist?( tgz_filename )
+    archive = Archive.new( tgz_filename )
+    files = Dir.glob('{data_bags,cookbooks}/**/*').reject { | f | File.directory?( f ) }
+    archive << files
   end
 
 end
+
