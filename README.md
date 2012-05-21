@@ -53,17 +53,39 @@ This is done from you local machine, using Capistrano.
 $ cap chef:bootstrap TARGET=$ANTANI SECRET_KEY=/PATH/TO/antani_data_bag_key
 ```
 
+Test
+====
+
+Full:
+
+````shell
+$ rake antani:install:full SECRET_KEY=path/to/key
+```
+Update:
+
+````shell
+$ rake antani:update
+```
+
 Deploy
 ======
 
-Via capistrano
---------------
+Remotely
+--------
+
+Full:
 
 ```shell
-$ cap chef:run_recipes TARGET=$ANTANI
+$ rake antani:install:full SECRET_KEY=path/to/key ANTANI_FULL_INSTALL=1
 ```
 
-On host
+Update:
+
+```shell
+$ rake antani:update ANTANI_FULL_INSTALL=1
+```
+
+Locally
 -------
 
 ```shell

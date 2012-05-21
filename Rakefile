@@ -128,7 +128,8 @@ namespace :antani do
                     'antani:close_session' ]
 
   task :do_update do
-    @rs.sudo 'chef-solo -r https://github.com/joeyates/chef-repo/raw/master/chef-solo.tar.gz'
+    raise "ANTANI_TARBALL_URL environment variable not set" unless ENV[ 'ANTANI_TARBALL_URL' ]
+    @rs.sudo "chef-solo -r #{ ENV[ 'ANTANI_TARBALL_URL' ] }"
   end
 
   task :check_key do
@@ -136,10 +137,13 @@ namespace :antani do
   end
 
   task :load_session do
-    if ENV[ 'ANTANI_INSTALL_TEST' ]
-      load_test_session
+    if ENV[ 'ANTANI_FULL_INSTALL' ]
+      ENV[ 'ANTANI_TARBALL_URL' ] = 'https://github.com/joeyates/chef-repo/raw/master/chef-solo.tar.gz'
+      raise 'TODO: load antani connection session'
     else
-      # TODO: load real session
+      puts 'Running test...'
+      ENV[ 'ANTANI_TARBALL_URL' ] = '/vagrant/chef-solo.tar.gz'
+      load_test_session
     end
   end
 
