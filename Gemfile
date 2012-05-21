@@ -1,7 +1,7 @@
 source :rubygems
 
 gem 'chef'
-gem 'libarchive-ruby'
+gem 'archive-tar-minitar'
 gem 'rake'
 
 group :development do

@@ -93,8 +93,7 @@ namespace :databag do
 
 end
 
-require 'archive'
-require 'fileutils'
+require 'archive/tar/minitar'
 
 namespace :antani do
 
@@ -109,9 +108,15 @@ namespace :antani do
   task :tarball do
     tgz_filename = 'chef-solo.tar.gz'
     FileUtils.rm( tgz_filename ) if File.exist?( tgz_filename )
-    archive = Archive.new( tgz_filename )
-    files = Dir.glob('{data_bags,cookbooks}/**/*').reject { | f | File.directory?( f ) }
-    archive << files
+    tgz   = Zlib::GzipWriter.new( File.open( tgz_filename, 'wb' ) )
+    tar   = Archive::Tar::Minitar::Output.new( tgz )
+
+    files = Dir.glob('{data_bags,cookbooks}/**/*')
+    files.reject! { | f | File.directory?( f ) }
+    files.each do | f |
+      Archive::Tar::Minitar.pack_file( f, tar )
+    end
+    tgz.close
   end
 
 end
