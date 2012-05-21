@@ -84,8 +84,10 @@ end
 #######################
 # System settings
 
-template '/etc/hostname' do
-  mode '0644'
+[ 'hostname', 'hosts' ].each do | file |
+  template "/etc/#{ file }" do
+    mode '0644'
+  end
 end
 
 # TODO: This is not working: use a test on `hostname`
