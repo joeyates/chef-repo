@@ -105,7 +105,11 @@ apt_repository 'ppa-p-balazs' do
   keyserver    'keyserver.ubuntu.com'
   key          'B89FA6AA'
   action       :add
-  notifies     :run, "execute[apt-get update]", :immediately
+end
+
+execute 'update packages' do
+  command 'apt-get update'
+  action  :run
 end
 
 #######################
