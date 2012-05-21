@@ -99,12 +99,13 @@ end
 # repositories
 
 apt_repository 'ppa-p-balazs' do
-  uri 'http://ppa.launchpad.net/p-balazs/postgresql/ubuntu'
+  uri          'http://ppa.launchpad.net/p-balazs/postgresql/ubuntu'
   distribution node['lsb']['codename']
-  components ['main']
-  keyserver 'keyserver.ubuntu.com'
-  key 'B89FA6AA'
-  action :add
+  components   ['main']
+  keyserver    'keyserver.ubuntu.com'
+  key          'B89FA6AA'
+  action       :add
+  notifies     :run, "execute[apt-get update]", :immediately
 end
 
 #######################
