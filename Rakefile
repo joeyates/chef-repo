@@ -174,12 +174,11 @@ namespace :antani do
 
     # Install dependencies
     task :dependencies do
-      @rs.sudo [
-        'apt-get update',
-        'apt-get install -y build-essential',
-        # ruby:
-        'apt-get install -y libreadline5-dev libssl-dev libsqlite3-dev zlib1g-dev libyaml-dev curl',
-      ]
+      @rs.sudo 'apt-get update'
+      @rs.sudo 'apt-get install -y build-essential'
+      # ruby:
+      @rs.sudo 'apt-get install -y libreadline5-dev libssl-dev libsqlite3-dev zlib1g-dev libyaml-dev curl'
+      @rs.sudo 'exit'
     end
 
     # Install ruby 1.9.3
