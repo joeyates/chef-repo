@@ -41,7 +41,7 @@ unless File.directory? errbit_path
     cwd errbit_path
     code <<-EOH
 export RAILS_ENV=production
-bundle install --deployment
+bundle install --deployment --without development test
 bundle exec rake errbit:bootstrap
 chmod -R a+w log
 EOH
@@ -55,4 +55,12 @@ EOH
 
   execute "service nginx restart"
 
+end
+
+
+cron "clear resolved errors" do
+  command     "cd #{errbit_path} && RAILS_ENV=production bundle exec rake errbit:db:clear_resolved"
+  hour        4
+  minute      0
+  action      :create
 end
